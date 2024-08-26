@@ -1,3 +1,4 @@
 selenium
 flake8
 pytest
+webdriver-manager
