@@ -1,15 +1,16 @@
+from typing import Optional
 from selenium.webdriver import Chrome as Driver
 
 
 def user_agent_override(
-        driver: Driver,
-        user_agent: str = None,
-        language: str = None,
-        platform: str = None,
-        **kwargs
+    driver: Driver,
+    user_agent: Optional[str] = None,
+    language: Optional[str] = None,
+    platform: Optional[str] = None,
+    **kwargs
 ) -> None:
     if user_agent is None:
-        ua = driver.execute_cdp_cmd("Browser.getVersion", {})['userAgent']
+        ua = driver.execute_cdp_cmd("Browser.getVersion", {})["userAgent"]
     else:
         ua = user_agent
     ua = ua.replace("HeadlessChrome", "Chrome")  # hide headless nature
@@ -23,4 +24,4 @@ def user_agent_override(
     else:
         override = {"userAgent": ua}
 
-    driver.execute_cdp_cmd('Network.setUserAgentOverride', override)
+    driver.execute_cdp_cmd("Network.setUserAgentOverride", override)

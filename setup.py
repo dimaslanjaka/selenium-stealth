@@ -12,7 +12,6 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/diprajpatra/selenium-stealth",
-    # packages=setuptools.find_packages(),
     packages=["selenium_stealth"],
     package_data={"selenium-stealth": ["js/*.js"], "selenium_stealth": ["js/*.js"]},
     classifiers=[
