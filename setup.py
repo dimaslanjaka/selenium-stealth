@@ -12,8 +12,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/diprajpatra/selenium-stealth",
-    packages=setuptools.find_packages(),
-    package_data={"selenium-stealth": ["js/*.js"]},
+    # packages=setuptools.find_packages(),
+    packages=["selenium_stealth"],
+    package_data={"selenium-stealth": ["js/*.js"], "selenium_stealth": ["js/*.js"]},
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
@@ -44,10 +45,14 @@ setuptools.setup(
         "Topic :: Software Development :: Testing :: Traffic Generation",
         "Topic :: Utilities",
     ],
-    python_requires='>=3, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
+    python_requires=">=3, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     include_package_data=True,
     install_requires=[
-       'selenium',
+        "selenium",
     ],
-    extras_require={"test": ["pytest", ]},
+    extras_require={
+        "test": [
+            "pytest",
+        ]
+    },
 )
