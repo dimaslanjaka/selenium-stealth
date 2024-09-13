@@ -46,9 +46,7 @@ setuptools.setup(
     ],
     python_requires=">=3, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     include_package_data=True,
-    install_requires=[
-        "selenium",
-    ],
+    install_requires=["selenium", "requests-cache", "requests"],
     extras_require={
         "test": [
             "pytest",
