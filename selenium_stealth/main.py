@@ -1,4 +1,6 @@
-from typing import List, Optional
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from selenium.webdriver import Chrome as Driver
 
@@ -16,6 +18,7 @@ from .user_agent_override import user_agent_override
 from .utils import with_utils
 from .webgl_vendor import webgl_vendor_override
 from .window_outerdimensions import window_outerdimensions
+from .wrapper import evaluateOnNewDocument
 
 
 def stealth(
@@ -71,62 +74,94 @@ def stealth(
         hairline_fix(driver, **kwargs)
 
 
+from typing import Optional, List, Dict, Any
+from selenium.webdriver.chrome.webdriver import WebDriver as Driver
+import json
+from pathlib import Path
+
+
 def stealth2(
     driver: Optional[Driver],
     user_agent: Optional[str] = None,
     languages: Optional[List[str]] = None,
     vendor: Optional[str] = None,
     platform: Optional[str] = None,
-    webgl_vendor: Optional[str] = None,
-    renderer: Optional[str] = None,
     fix_hairline: bool = False,
     run_on_insecure_origins: bool = False,
-    webgl_version: Optional[str] = None,
-    shading_language: Optional[str] = None,
+    webgl_data: Dict[str, Any] = {},
     **kwargs,
 ) -> None:
     """
-    If user_agent = None then selenium-stealth only remove the 'headless' from userAgent
-        Here is an example of args:
-            user_agent: str = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36',
-            languages: [str] = ["en-US", "en"], # or en-US,en;q=0.5
-            vendor: str = "Google Inc.",
-            platform: str = "Win32",
-            webgl_vendor: str = "Intel Inc.",
-            renderer: str = "Intel Iris OpenGL Engine",
-            fix_hairline: bool = False,
-            run_on_insecure_origins: bool = False,
+    Configures various stealth techniques for a Selenium WebDriver instance to evade detection.
+
+    Args:
+        driver (Optional[Driver]): Selenium WebDriver instance. Only Chrome is supported.
+        user_agent (Optional[str]): Custom user agent string. If None, 'headless' is removed from the default user agent.
+        languages (Optional[List[str]]): List of accepted languages, e.g., ["en-US", "en"].
+        vendor (Optional[str]): The vendor for the navigator object, e.g., "Google Inc.".
+        platform (Optional[str]): The platform string, e.g., "Win32".
+        fix_hairline (bool): Whether to fix thin hairline rendering issues in headless mode.
+        run_on_insecure_origins (bool): Whether to run on insecure origins.
+        webgl_data (Dict[str, Any]): Data to spoof WebGL rendering information.
+        **kwargs: Additional arguments for further customization.
+
+    WebGL data example see https://github.com/dimaslanjaka/selenium-stealth/blob/48dcd6c85e10109b2d5ebcc82ebbea6b78815ea5/data/fingerprint1.json#L88
+
+    Raises:
+        ValueError: If the provided driver is not an instance of selenium.webdriver.Chrome.
+
+    Example usage:
+        stealth2(driver, user_agent="Mozilla/5.0...", languages=["en-US", "en"], vendor="Google Inc.")
     """
+
     if not isinstance(driver, Driver):
         raise ValueError(
-            "driver must is selenium.webdriver.Chrome, currently this lib only support Chrome"
+            "driver must be selenium.webdriver.Chrome. Currently, this library only supports Chrome."
         )
 
+    # Handle languages input as a string or list
     ua_languages = None
-    if isinstance(languages, dict):
+    if isinstance(languages, list):
         ua_languages = ",".join(languages)
     elif isinstance(languages, str):
-        ua_languages = languages  # eg: en-US,en;q=0.5
+        ua_languages = languages  # e.g., "en-US,en;q=0.5"
 
+    # Apply various stealth methods to evade detection
     with_utils(driver, **kwargs)
     chrome_app(driver, **kwargs)
     chrome_runtime(driver, run_on_insecure_origins, **kwargs)
     iframe_content_window(driver, **kwargs)
     media_codecs(driver, **kwargs)
+
+    # Set language overrides if specified
     if languages:
         navigator_languages(driver, languages, **kwargs)
+
     navigator_permissions(driver, **kwargs)
     navigator_plugins(driver, **kwargs)
+
+    # Set vendor if provided
     if vendor:
         navigator_vendor(driver, vendor, **kwargs)
+
     navigator_webdriver(driver, **kwargs)
+
+    # Override the user agent if all necessary parameters are provided
     if user_agent and ua_languages and platform:
         user_agent_override(driver, user_agent, ua_languages, platform, **kwargs)
-    if renderer and webgl_vendor and shading_language and webgl_vendor:
-        webgl_vendor_override(
-            driver, webgl_vendor, renderer, shading_language, webgl_version, **kwargs
+
+    # Inject WebGL spoofing script if webgl_data is provided
+    if webgl_data:
+        js_code = Path(__file__).parent.joinpath("js/webgl.vendor2.js").read_text()
+        evaluateOnNewDocument(
+            driver,
+            js_code,
+            json.dumps(webgl_data),
         )
+
+    # Fix window dimensions to avoid detection
     window_outerdimensions(driver, **kwargs)
 
+    # Optionally fix hairline rendering issues in headless mode
     if fix_hairline:
         hairline_fix(driver, **kwargs)

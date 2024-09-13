@@ -1,5 +1,5 @@
 const { plugin } = require('selenium-with-fingerprints');
-const util = require('sbg-utility');
+const { writefile } = require('sbg-utility');
 
 // Set the service key for the plugin (you can buy it here https://bablosoft.com/directbuy/FingerprintSwitcher/2).
 // Leave an empty string to use the free version.
@@ -10,7 +10,8 @@ plugin.setServiceKey('');
   const fingerprint = await plugin.fetch({
     maxWidth: 1366, // max width pixel of device
     maxHeight: 768, // max height pixel of device
-    tags: ["Microsoft Windows", "Chrome"]
+    tags: ["Microsoft Windows", "Chrome"],
+    enablePrecomputedFingerprints: true
   });
 
   writefile(path.join(__dirname, "data/fingerprints/" + md5(fingerprint) + ".json"), fingerprint);

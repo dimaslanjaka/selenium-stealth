@@ -115,4 +115,11 @@
       ...webglProps.webglContextAttributesDefaults
     };
   };
+  WebGL2RenderingContext.prototype.getContextAttributes = function () {
+    const attributes = originalGetContextAttributes.call(this);
+    return {
+      ...attributes,
+      ...webglProps.webglContextAttributesDefaults
+    };
+  };
 })();
