@@ -1,0 +1,22 @@
+{
+  "name": "selenium-stealth",
+  "version": "1.0.0",
+  "description": "A python package **selenium-stealth** to prevent detection. This programme is trying to make python selenium more stealthy.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browser-with-fingerprints": "^1.7.1",
+    "chromedriver": "^127.0.2",
+    "sbg-utility": "^1.1.6",
+    "selenium-webdriver": "^4.24.0",
+    "selenium-with-fingerprints": "^1.6.3"
+  }
+}
