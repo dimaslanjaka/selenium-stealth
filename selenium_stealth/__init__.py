@@ -1,10 +1,7 @@
-from typing import List, Optional
-
-from selenium.webdriver import Chrome as Driver
-
 from .ansi import AnsiFormatter
 from .chrome_app import chrome_app
 from .chrome_runtime import chrome_runtime
+from .debug_utils import get_driver_webgl_info
 from .hairline_fix import hairline_fix
 from .iframe_content_window import iframe_content_window
 from .main import stealth, stealth2

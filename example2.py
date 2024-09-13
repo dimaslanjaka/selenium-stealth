@@ -1,8 +1,6 @@
 import base64
-import json
 import math
 import os
-from pathlib import Path
 import re
 import time
 import traceback
@@ -11,13 +9,14 @@ from typing import Any, Dict
 from selenium import webdriver
 from selenium.webdriver import Chrome as WebDriver
 from selenium.webdriver.chrome.service import Service as ChromiumService
-from selenium_stealth import stealth2, Preferences, read_json_file
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
+from selenium_stealth.preferences import Preferences
+from selenium_stealth.main import stealth2
 from selenium_stealth.ansi import AnsiFormatter
-from selenium_stealth.wrapper import evaluateOnNewDocument
-
+from selenium_stealth.debug_utils import get_driver_webgl_info
+from selenium_stealth.utils import read_json_file
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -76,64 +75,7 @@ def validate_fingerprint(driver: WebDriver):
             f"useragent data invalid should be {AnsiFormatter.green(fingerprint.get('ua'))} but got {AnsiFormatter.red(browser_agent)}"
         )
 
-    webgl_getter = """
-function getWebGLInfo() {
-  const canvas = document.createElement("canvas");
-  const gl =
-    canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-  if (!gl) {
-    return "WebGL not supported";
-  }
-
-  // Add WEBGL_debug_renderer_info extension for unmasked renderer and vendor
-  const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-
-  const parameters = [
-    "VENDOR",
-    "RENDERER",
-    "SHADING_LANGUAGE_VERSION",
-    "VERSION",
-    "MAX_TEXTURE_SIZE",
-    "MAX_RENDERBUFFER_SIZE",
-    "ALPHA_BITS",
-    "BLUE_BITS",
-    "GREEN_BITS",
-    "RED_BITS",
-    "STENCIL_BITS",
-    "MAX_VIEWPORT_DIMS",
-    "ALIASED_LINE_WIDTH_RANGE",
-    "ALIASED_POINT_SIZE_RANGE",
-    "MAX_TEXTURE_IMAGE_UNITS",
-    "MAX_CUBE_MAP_TEXTURE_SIZE",
-    "MAX_FRAGMENT_UNIFORM_VECTORS",
-    "MAX_VERTEX_ATTRIBS",
-    "MAX_VERTEX_UNIFORM_VECTORS",
-    "MAX_VERTEX_TEXTURE_IMAGE_UNITS",
-    "MAX_VARYING_VECTORS"
-  ];
-
-  const webGLInfo = {};
-
-  parameters.forEach((param) => {
-    webGLInfo[param] = gl.getParameter(gl[param]);
-  });
-
-  // Add unmasked renderer and vendor information if available
-  if (debugInfo) {
-    webGLInfo.UNMASKED_VENDOR_WEBGL = gl.getParameter(
-      debugInfo.UNMASKED_VENDOR_WEBGL
-    );
-    webGLInfo.UNMASKED_RENDERER_WEBGL = gl.getParameter(
-      debugInfo.UNMASKED_RENDERER_WEBGL
-    );
-  }
-
-  return webGLInfo;
-}
-
-return JSON.stringify(getWebGLInfo());
-"""
-    webgl_getter_result = json.loads(driver.execute_script(webgl_getter))
+    webgl_getter_result = get_driver_webgl_info(driver)
     print(webgl_getter_result)
     if webgl_getter_result.get("SHADING_LANGUAGE_VERSION") != webgl_data.get(
         "shadingLanguage"
