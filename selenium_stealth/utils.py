@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, Optional, Union
@@ -65,3 +66,29 @@ def write_json_file(file_path: Optional[str], data: Any) -> None:
         print(f"Error serializing data to JSON: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+
+def md5(data: Optional[str]) -> Union[str, None]:
+    """
+    Computes the MD5 hash of a given string.
+
+    Args:
+        data (Optional[str]): The string to compute the MD5 hash for.
+
+    Returns:
+        Optional[str]: The MD5 hash of the input string as a hexadecimal string, or None if the input is None.
+    """
+    if data is None:
+        print("No data provided.")
+        return None
+
+    try:
+        # Create an MD5 hash object
+        md5_hash = hashlib.md5()
+        # Update the hash object with the bytes of the input string
+        md5_hash.update(data.encode("utf-8"))
+        # Return the hexadecimal representation of the digest
+        return md5_hash.hexdigest()
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
