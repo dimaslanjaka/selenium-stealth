@@ -67,6 +67,7 @@ if not driver:
 
 fingerprint: Dict[str, Any] = read_json_file("data/fingerprint1.json")
 webgl_data = fingerprint.get("webgl_properties", {})
+audio_properties = fingerprint.get("audio_properties", {})
 
 
 def validate_fingerprint(driver: WebDriver):
@@ -107,54 +108,23 @@ if driver:
             platform="Win32",
             webgl_data=webgl_data,
             user_agent=fingerprint.get("ua"),
-            audio_properties=fingerprint.get("audio_properties"),
+            # audio_properties=audio_properties
         )
 
         # url = "https://bot.sannysoft.com/"
         # url = "https://sh.webmanajemen.com/webgl-information/"
         # url = "https://pixelscan.net/"
         # url = "https://webglreport.com/"
-        url = "https://privacycheck.sec.lrz.de/active/fp_wg/fp_webgl.html"
+        # url = "https://privacycheck.sec.lrz.de/active/fp_wg/fp_webgl.html"
+        url = "https://abrahamjuliot.github.io/creepjs/"
         driver.get(url)
 
         time.sleep(3)
 
         validate_fingerprint(driver)
 
-        time.sleep(30)  # wait before screenshoot
-
-        # screenshoot
-        metrics = driver.execute_cdp_cmd("Page.getLayoutMetrics", {})
-        width = math.ceil(metrics["contentSize"]["width"])
-        height = math.ceil(metrics["contentSize"]["height"])
-        screenOrientation = dict(angle=0, type="portraitPrimary")
-        driver.execute_cdp_cmd(
-            "Emulation.setDeviceMetricsOverride",
-            {
-                "mobile": False,
-                "width": width,
-                "height": height,
-                "deviceScaleFactor": 1,
-                "screenOrientation": screenOrientation,
-            },
-        )
-        clip = dict(x=0, y=0, width=width, height=height, scale=1)
-        opt: Dict[str, Any] = {"format": "png"}
-        if clip:
-            opt["clip"] = clip
-
-        result = driver.execute_cdp_cmd("Page.captureScreenshot", opt)
-        buffer = base64.b64decode(result.get("data", b""))
-        os.makedirs(os.path.join(current_dir, ".mypy_cache"), exist_ok=True)
-        with open(
-            os.path.join(
-                current_dir, ".mypy_cache/selenium_chrome_headful_with_stealth.png"
-            ),
-            "wb",
-        ) as f:
-            f.write(buffer)
-
-        driver.quit()
+        # time.sleep(60)  # wait before quit
+        # driver.quit()
     except Exception as e:
         print(f"Browser error {e}")
         traceback.print_exc()
