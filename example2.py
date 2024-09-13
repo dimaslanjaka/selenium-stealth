@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.service import Service as ChromiumService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
+from selenium_stealth.audio_properties import audio_properties_override
 from selenium_stealth.preferences import Preferences
 from selenium_stealth.main import stealth2
 from selenium_stealth.ansi import AnsiFormatter
@@ -106,6 +107,7 @@ if driver:
             platform="Win32",
             webgl_data=webgl_data,
             user_agent=fingerprint.get("ua"),
+            audio_properties=fingerprint.get("audio_properties"),
         )
 
         # url = "https://bot.sannysoft.com/"

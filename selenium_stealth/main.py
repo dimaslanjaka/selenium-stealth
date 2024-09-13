@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from selenium.webdriver import Chrome as Driver
 
+from .audio_properties import audio_properties_override
 from .chrome_app import chrome_app
 from .chrome_runtime import chrome_runtime
 from .hairline_fix import hairline_fix
@@ -74,10 +75,11 @@ def stealth(
         hairline_fix(driver, **kwargs)
 
 
-from typing import Optional, List, Dict, Any
-from selenium.webdriver.chrome.webdriver import WebDriver as Driver
 import json
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from selenium.webdriver.chrome.webdriver import WebDriver as Driver
 
 
 def stealth2(
@@ -89,6 +91,7 @@ def stealth2(
     fix_hairline: bool = False,
     run_on_insecure_origins: bool = False,
     webgl_data: Dict[str, Any] = {},
+    audio_properties: Optional[Dict[str, Any]] = None,
     **kwargs,
 ) -> None:
     """
@@ -158,6 +161,10 @@ def stealth2(
             js_code,
             json.dumps(webgl_data),
         )
+
+    if isinstance(audio_properties, dict) and audio_properties:
+        # Spoof audio properties
+        audio_properties_override(driver, audio_properties)
 
     # Fix window dimensions to avoid detection
     window_outerdimensions(driver, **kwargs)
