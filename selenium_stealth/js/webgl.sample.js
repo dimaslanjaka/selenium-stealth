@@ -1,5 +1,15 @@
-// Helper function to override WebGL properties
+/**
+ * Overrides WebGL properties and context attributes for the given WebGL context.
+ *
+ * @param {typeof WebGLRenderingContext | typeof WebGL2RenderingContext} webGLContext - The WebGL context to override (either WebGLRenderingContext or WebGL2RenderingContext).
+ */
 function overrideWebGLContext(webGLContext) {
+  /**
+   * Override for `getParameter` to spoof WebGL properties.
+   *
+   * @param {number} parameter - The WebGL parameter to query.
+   * @returns {string|number|Array<number>} - The spoofed value for the queried parameter.
+   */
   const originalGetParameter = webGLContext.prototype.getParameter;
   webGLContext.prototype.getParameter = function (parameter) {
     switch (parameter) {
@@ -54,7 +64,11 @@ function overrideWebGLContext(webGLContext) {
     }
   };
 
-  // Spoofing WebGL context attributes
+  /**
+   * Override for `getContextAttributes` to spoof WebGL context attributes.
+   *
+   * @returns {WebGLContextAttributes} - The modified context attributes.
+   */
   const originalGetContextAttributes = webGLContext.prototype.getContextAttributes;
   webGLContext.prototype.getContextAttributes = function () {
     const attributes = originalGetContextAttributes.call(this);
