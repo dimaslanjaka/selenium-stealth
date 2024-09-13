@@ -5,47 +5,17 @@ import os
 import re
 import time
 import traceback
+from typing import Any, Dict
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromiumService
-from selenium_stealth import stealth
+from selenium_stealth import stealth, Preferences
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
+from selenium_stealth.utils import read_json_file
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
-
-class Preferences:
-    def __init__(
-        self,
-        file_path=os.path.join(current_dir, ".mypy_cache/preferences.json"),
-    ):
-        self.file_path = file_path
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.preferences = self.load()
-
-    def save(self):
-        with open(self.file_path, "w") as file:
-            json.dump(self.preferences, file, indent=4)
-
-    def load(self):
-        try:
-            with open(self.file_path, "r") as file:
-                return json.load(file)
-        except FileNotFoundError:
-            # Return default preferences if the file doesn't exist
-            return {
-                "theme": "light",
-                "font_size": 10,
-                "language": "en",
-            }
-
-    def get(self, key, default=None):
-        return self.preferences.get(key, default)
-
-    def set(self, key, value):
-        self.preferences[key] = value
-        self.save()
 
 
 # webdriver start
@@ -111,6 +81,9 @@ if not driver:
         else:
             print(f"fail load driver selenium 4: {e}")
 
+fingerprint = read_json_file("data/fingerprint1.json")
+webgl_data = fingerprint.get("webgl_properties", {})
+
 if driver:
     try:
         stealth(
@@ -118,15 +91,22 @@ if driver:
             languages=["en-US", "en"],
             vendor="Google Inc.",
             platform="Win32",
-            webgl_vendor="Intel Inc.",
-            renderer="Intel Iris OpenGL Engine",
+            webgl_vendor=webgl_data.get("unmaskedVendor"),
+            renderer=webgl_data.get("unmaskedRenderer"),
             fix_hairline=True,
+            user_agent=fingerprint.get("ua"),
+            shading_language=webgl_data.get("shadingLanguage"),
+            webgl_version=webgl_data.get("version"),
         )
 
         print(driver.execute_script("return navigator.userAgent;"))
-        url = "https://bot.sannysoft.com/"
+        # url = "https://bot.sannysoft.com/"
+        url = "https://sh.webmanajemen.com/webgl-information/"
         driver.get(url)
 
+        time.sleep(30)  # wait before screenshoot
+
+        # screenshoot
         metrics = driver.execute_cdp_cmd("Page.getLayoutMetrics", {})
         width = math.ceil(metrics["contentSize"]["width"])
         height = math.ceil(metrics["contentSize"]["height"])
@@ -142,7 +122,7 @@ if driver:
             },
         )
         clip = dict(x=0, y=0, width=width, height=height, scale=1)
-        opt = {"format": "png"}
+        opt: Dict[str, Any] = {"format": "png"}
         if clip:
             opt["clip"] = clip
 
@@ -156,7 +136,7 @@ if driver:
             "wb",
         ) as f:
             f.write(buffer)
-        time.sleep(30)  # wait 30s
+
         driver.quit()
     except Exception as e:
         print(f"Browser error {e}")

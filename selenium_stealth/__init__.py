@@ -12,8 +12,9 @@ from .navigator_permissions import navigator_permissions
 from .navigator_plugins import navigator_plugins
 from .navigator_vendor import navigator_vendor
 from .navigator_webdriver import navigator_webdriver
+from .preferences import Preferences
 from .stealth import stealth
 from .user_agent_override import user_agent_override
-from .utils import with_utils
+from .utils import with_utils, read_json_file
 from .webgl_vendor import webgl_vendor_override
 from .window_outerdimensions import window_outerdimensions

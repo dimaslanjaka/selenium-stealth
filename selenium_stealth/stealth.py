@@ -28,7 +28,9 @@ def stealth(
     renderer: str = "Intel Iris OpenGL Engine",
     fix_hairline: bool = False,
     run_on_insecure_origins: bool = False,
-    **kwargs
+    webgl_version: str = "WebGL 1.0",
+    shading_language: str = "WebGL GLSL ES 1.0",
+    **kwargs,
 ) -> None:
     """
     If user_agent = None then selenium-stealth only remove the 'headless' from userAgent
@@ -60,7 +62,9 @@ def stealth(
     navigator_vendor(driver, vendor, **kwargs)
     navigator_webdriver(driver, **kwargs)
     user_agent_override(driver, user_agent, ua_languages, platform, **kwargs)
-    webgl_vendor_override(driver, webgl_vendor, renderer, **kwargs)
+    webgl_vendor_override(
+        driver, webgl_vendor, renderer, shading_language, webgl_version, **kwargs
+    )
     window_outerdimensions(driver, **kwargs)
 
     if fix_hairline:

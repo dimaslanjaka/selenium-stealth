@@ -1,6 +1,7 @@
-from selenium.webdriver import Chrome as Driver
-from typing import Any
 import json
+from typing import Any
+
+from selenium.webdriver import Chrome as Driver
 
 
 def evaluationString(fun: str, *args: Any) -> str:
