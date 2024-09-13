@@ -13,7 +13,7 @@ from .navigator_plugins import navigator_plugins
 from .navigator_vendor import navigator_vendor
 from .navigator_webdriver import navigator_webdriver
 from .preferences import Preferences
-from .stealth import stealth
+from .main import stealth, stealth2
 from .user_agent_override import user_agent_override
 from .utils import with_utils, read_json_file
 from .webgl_vendor import webgl_vendor_override
