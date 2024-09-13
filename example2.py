@@ -153,9 +153,11 @@ if driver:
             user_agent=fingerprint.get("ua"),
         )
 
-        url = "https://bot.sannysoft.com/"
+        # url = "https://bot.sannysoft.com/"
         # url = "https://sh.webmanajemen.com/webgl-information/"
-        url = "https://pixelscan.net/"
+        # url = "https://pixelscan.net/"
+        # url = "https://webglreport.com/"
+        url = "https://privacycheck.sec.lrz.de/active/fp_wg/fp_webgl.html"
         driver.get(url)
 
         time.sleep(3)
