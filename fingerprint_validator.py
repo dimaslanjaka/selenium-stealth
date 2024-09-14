@@ -7,12 +7,13 @@ from selenium_stealth.debug_utils import get_driver_webgl_info
 
 
 def validate_fingerprint(driver: WebDriver, fingerprint: Dict[str, Any]):
-    webgl_data = fingerprint.get("webgl_properties", {})
+    webgl_data: Dict[str, Any] = fingerprint.get("webgl_properties", {})
+    ua = fingerprint.get("ua")
 
     browser_agent = driver.execute_script("return navigator.userAgent;")
     if browser_agent != fingerprint.get("ua"):
         raise ValueError(
-            f"useragent data invalid should be {AnsiFormatter.green(fingerprint.get('ua'))} but got {AnsiFormatter.red(browser_agent)}"
+            f"useragent data invalid should be {AnsiFormatter.green(ua)} but got {AnsiFormatter.red(browser_agent)}"
         )
 
     webgl_getter_result = get_driver_webgl_info(driver)

@@ -11,6 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
 from selenium_stealth.chrome_app import chrome_app
+from selenium_stealth.debug_utils import get_driver_webgl_info
 from selenium_stealth.fingerprints import fetch_fingerprint
 from selenium_stealth.hairline_fix import hairline_fix
 from selenium_stealth.iframe_content_window import iframe_content_window
@@ -44,6 +45,9 @@ chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument(f"user-agent={userAgent}")
+chrome_options.add_argument(
+    "user-data-dir=" + os.path.join(current_dir, ".mypy_cache/chrome_profile")
+)
 driver = None
 
 if not driver:
@@ -84,36 +88,46 @@ if driver:
         navigator_webdriver(driver)
         window_outerdimensions(driver)
         user_agent_override(driver, userAgent, "en-US,en;q=0.9", "Win32", True)
-        webgl_vendor_override(
-            driver,
-            webgl_vendor=fingerprint.get("vendor"),
-            renderer=fingerprint.get("renderer"),
-        )
+        # webgl_vendor_override(
+        #     driver,
+        #     webgl_vendor=fingerprint.get("vendor"),
+        #     renderer=fingerprint.get("renderer"),
+        # )
         hairline_fix(driver)
 
-        # driver.execute_cdp_cmd(
-        #     "Page.addScriptToEvaluateOnNewDocument",
-        #     {
-        #         "source": Path(__file__)
-        #         .parent.joinpath("tests/example/webgl.js")
-        #         .read_text()
-        #     },
-        # )
-        # driver.execute_cdp_cmd(
-        #     "Page.addScriptToEvaluateOnNewDocument",
-        #     {
-        #         "source": Path(__file__)
-        #         .parent.joinpath("tests/example/webgl2.js")
-        #         .read_text()
-        #     },
-        # )
+        driver.execute_cdp_cmd(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source": Path(__file__)
+                .parent.joinpath("tests/example/webgl.js")
+                .read_text()
+            },
+        )
+        driver.execute_script(
+            Path(__file__).parent.joinpath("tests/example/webgl.js").read_text()
+        )
+        driver.execute_cdp_cmd(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source": Path(__file__)
+                .parent.joinpath("tests/example/webgl2.js")
+                .read_text()
+            },
+        )
+        driver.execute_script(
+            Path(__file__).parent.joinpath("tests/example/webgl2.js").read_text()
+        )
 
-        # url = "https://bot.sannysoft.com/"
+        webgl_getter_result = get_driver_webgl_info(driver)
+        print(webgl_getter_result)
+
+        url = "https://bot.sannysoft.com/"
         # url = "https://sh.webmanajemen.com/webgl-information/"
         # url = "https://pixelscan.net/"
         # url = "https://webglreport.com/"
         # url = "https://privacycheck.sec.lrz.de/active/fp_wg/fp_webgl.html"
-        url = "https://abrahamjuliot.github.io/creepjs/"
+        # url = "https://abrahamjuliot.github.io/creepjs/"
+        # url = "https://www.browserscan.net/"
         driver.get(url)
 
         time.sleep(120)
