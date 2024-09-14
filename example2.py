@@ -1,5 +1,3 @@
-import base64
-import math
 import os
 import re
 import time
@@ -7,17 +5,14 @@ import traceback
 from typing import Any, Dict
 
 from selenium import webdriver
-from selenium.webdriver import Chrome as WebDriver
 from selenium.webdriver.chrome.service import Service as ChromiumService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
-from selenium_stealth.audio_properties import audio_properties_override
 from selenium_stealth.preferences import Preferences
 from selenium_stealth.main import stealth2
-from selenium_stealth.ansi import AnsiFormatter
-from selenium_stealth.debug_utils import get_driver_webgl_info
 from selenium_stealth.utils import read_json_file
+from fingerprint_validator import validate_fingerprint
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -70,35 +65,6 @@ webgl_data = fingerprint.get("webgl_properties", {})
 audio_properties = fingerprint.get("audio_properties", {})
 
 
-def validate_fingerprint(driver: WebDriver):
-    browser_agent = driver.execute_script("return navigator.userAgent;")
-    if browser_agent != fingerprint.get("ua"):
-        raise ValueError(
-            f"useragent data invalid should be {AnsiFormatter.green(fingerprint.get('ua'))} but got {AnsiFormatter.red(browser_agent)}"
-        )
-
-    webgl_getter_result = get_driver_webgl_info(driver)
-    print(webgl_getter_result)
-    if webgl_getter_result.get("SHADING_LANGUAGE_VERSION") != webgl_data.get(
-        "shadingLanguage"
-    ):
-        raise ValueError(
-            f"shadingLanguage missmatch, value should be {AnsiFormatter.green(webgl_data.get('shadingLanguage'))} but got {AnsiFormatter.red(webgl_getter_result('SHADING_LANGUAGE_VERSION'))}"
-        )
-    if webgl_getter_result.get("RENDERER") != webgl_data.get("renderer"):
-        raise ValueError(
-            f"shadingLanguage missmatch, value should be {AnsiFormatter.green(webgl_data.get('renderer'))} but got {AnsiFormatter.red(webgl_getter_result('RENDERER'))}"
-        )
-    if webgl_getter_result.get("VENDOR") != webgl_data.get("vendor"):
-        raise ValueError(
-            f"vendor missmatch, value should be {AnsiFormatter.green(webgl_data.get('vendor'))} but got {AnsiFormatter.red(webgl_getter_result('VENDOR'))}"
-        )
-    if webgl_getter_result.get("VERSION") != webgl_data.get("version"):
-        raise ValueError(
-            f"version missmatch, value should be {AnsiFormatter.green(webgl_data.get('version'))} but got {AnsiFormatter.red(webgl_getter_result('VERSION'))}"
-        )
-
-
 if driver:
     try:
         stealth2(
@@ -121,7 +87,7 @@ if driver:
 
         time.sleep(3)
 
-        validate_fingerprint(driver)
+        validate_fingerprint(driver, fingerprint)
 
         # time.sleep(60)  # wait before quit
         # driver.quit()
