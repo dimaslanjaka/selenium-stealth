@@ -34,6 +34,7 @@ from selenium_stealth.ansi import AnsiFormatter
 from selenium_stealth.debug_utils import get_driver_webgl_info
 from selenium_stealth.user_agent_override import user_agent_override
 from selenium_stealth.utils import read_json_file, with_utils, with_utils2
+from selenium_stealth.webgl_vendor import webgl_vendor_override
 from selenium_stealth.window_outerdimensions import window_outerdimensions
 from selenium_stealth.wrapper import evaluateOnNewDocument
 
@@ -55,7 +56,7 @@ chrome_options.add_argument("start-maximized")
 chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 chrome_options.add_experimental_option("useAutomationExtension", False)
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-chrome_options.add_argument("--disable-gpu")
+# chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument(f"user-agent={userAgent}")
@@ -101,37 +102,11 @@ if driver:
         user_agent_override(
             driver, fingerprint.get("ua"), fingerprint.get("lang"), "Win32", True
         )
-        js_code = """
-const getParameterProxyHandler = {
-apply: function(target, ctx, args) {
-    const param = (args || [])[0]
-    const result = utils.cache.Reflect.apply(target, ctx, args)
-    // UNMASKED_VENDOR_WEBGL
-    if (param === 37445) {
-        return '%s'; // default in headless: Google Inc.
-    }
-    // UNMASKED_RENDERER_WEBGL
-    if (param === 37446) {
-        return '%s'; // default in headless: Google SwiftShader
-    }
-    return result
-}
-}
-
-// There's more than one WebGL rendering context
-// https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext#Browser_compatibility
-// To find out the original values here: Object.getOwnPropertyDescriptors(WebGLRenderingContext.prototype.getParameter)
-const addProxy = (obj, propName) => {
-    utils.replaceWithProxy(obj, propName, getParameterProxyHandler)
-}
-// For whatever weird reason loops don't play nice with Object.defineProperty, here's the next best thing:
-addProxy(WebGLRenderingContext.prototype, 'getParameter')
-addProxy(WebGL2RenderingContext.prototype, 'getParameter')
-""" % (
-            webgl_data.get("unmaskedVendor"),
-            webgl_data.get("unmaskedRenderer"),
+        webgl_vendor_override(
+            driver,
+            webgl_vendor=webgl_data.get("unmaskedVendor").replace("'", r"\'"),
+            renderer=webgl_data.get("unmaskedRenderer").replace("'", r"\'"),
         )
-        evaluateOnNewDocument(driver, js_code)
         hairline_fix(driver)
 
         # url = "https://bot.sannysoft.com/"

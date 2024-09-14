@@ -9,7 +9,7 @@
         return vendor || 'Intel Inc.' // default in headless: Google Inc.
       }
       // UNMASKED_RENDERER_WEBGL
-      if (param === 37446) {
+      if (param === 37446 || param === 7937) {
         return renderer || 'Intel Iris OpenGL Engine' // default in headless: Google SwiftShader
       }
       return utils.cache.Reflect.apply(target, ctx, args)
