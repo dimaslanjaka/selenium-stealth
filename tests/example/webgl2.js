@@ -1,6 +1,6 @@
 const webgl2GetParameter = WebGL2RenderingContext.prototype.getParameter;
 
-const webgl2Handler = function(parameter) {
+const webgl2Handler = function (parameter) {
   if (parameter === 37445) {
     return "Google Inc. (NVIDIA)";
   }
@@ -10,6 +10,20 @@ const webgl2Handler = function(parameter) {
   return webgl2GetParameter.call(this, parameter); // Make sure 'this' refers to the WebGL2RenderingContext
 };
 
-WebGL2RenderingContext.prototype.getParameter = function(parameter) {
+WebGL2RenderingContext.prototype.getParameter = function (parameter) {
   return webgl2Handler.call(this, parameter); // Ensure 'this' is the WebGL context
 };
+
+// const iframes = [...window.top.document.querySelectorAll("iframe")];
+// for (var i = 0; i < iframes.length; i++) {
+//   if (iframes[i].contentWindow) {
+//     if (iframes[i].contentWindow.WebGLRenderingContext) {
+//       iframes[i].contentWindow.WebGLRenderingContext.prototype.bufferData = WebGLRenderingContext.prototype.bufferData;
+//       iframes[i].contentWindow.WebGLRenderingContext.prototype.getParameter = WebGLRenderingContext.prototype.getParameter;
+//     }
+//     if (iframes[i].contentWindow.WebGL2RenderingContext) {
+//       iframes[i].contentWindow.WebGL2RenderingContext.prototype.bufferData = WebGL2RenderingContext.prototype.bufferData;
+//       iframes[i].contentWindow.WebGL2RenderingContext.prototype.getParameter = WebGL2RenderingContext.prototype.getParameter;
+//     }
+//   }
+// }

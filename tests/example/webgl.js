@@ -13,3 +13,17 @@ const webglHandler = function(parameter) {
 WebGLRenderingContext.prototype.getParameter = function(parameter) {
   return webglHandler.call(this, parameter); // Ensure 'this' is the WebGL context
 };
+
+// const iframes = [...window.top.document.querySelectorAll("iframe")];
+// for (var i = 0; i < iframes.length; i++) {
+//   if (iframes[i].contentWindow) {
+//     if (iframes[i].contentWindow.WebGLRenderingContext) {
+//       iframes[i].contentWindow.WebGLRenderingContext.prototype.bufferData = WebGLRenderingContext.prototype.bufferData;
+//       iframes[i].contentWindow.WebGLRenderingContext.prototype.getParameter = WebGLRenderingContext.prototype.getParameter;
+//     }
+//     if (iframes[i].contentWindow.WebGL2RenderingContext) {
+//       iframes[i].contentWindow.WebGL2RenderingContext.prototype.bufferData = WebGL2RenderingContext.prototype.bufferData;
+//       iframes[i].contentWindow.WebGL2RenderingContext.prototype.getParameter = WebGL2RenderingContext.prototype.getParameter;
+//     }
+//   }
+// }
