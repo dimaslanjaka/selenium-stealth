@@ -101,7 +101,8 @@ if driver:
 
         print(driver.execute_script("return navigator.userAgent;"))
         # url = "https://bot.sannysoft.com/"
-        url = "https://sh.webmanajemen.com/webgl-information/"
+        # url = "https://sh.webmanajemen.com/webgl-information/"
+        url = "https://abrahamjuliot.github.io/creepjs/"
         driver.get(url)
 
         time.sleep(30)  # wait before screenshoot

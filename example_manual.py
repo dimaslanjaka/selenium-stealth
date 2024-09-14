@@ -95,40 +95,42 @@ if driver:
         # )
         hairline_fix(driver)
 
-        driver.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": Path(__file__)
-                .parent.joinpath("tests/example/webgl.js")
-                .read_text()
-            },
-        )
-        driver.execute_script(
-            Path(__file__).parent.joinpath("tests/example/webgl.js").read_text()
-        )
-        driver.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": Path(__file__)
-                .parent.joinpath("tests/example/webgl2.js")
-                .read_text()
-            },
-        )
-        driver.execute_script(
-            Path(__file__).parent.joinpath("tests/example/webgl2.js").read_text()
-        )
+        # driver.execute_cdp_cmd(
+        #     "Page.addScriptToEvaluateOnNewDocument",
+        #     {
+        #         "source": Path(__file__)
+        #         .parent.joinpath("tests/example/webgl.js")
+        #         .read_text()
+        #     },
+        # )
+        # driver.execute_script(
+        #     Path(__file__).parent.joinpath("tests/example/webgl.js").read_text()
+        # )
+        # driver.execute_cdp_cmd(
+        #     "Page.addScriptToEvaluateOnNewDocument",
+        #     {
+        #         "source": Path(__file__)
+        #         .parent.joinpath("tests/example/webgl2.js")
+        #         .read_text()
+        #     },
+        # )
+        # driver.execute_script(
+        #     Path(__file__).parent.joinpath("tests/example/webgl2.js").read_text()
+        # )
 
-        webgl_getter_result = get_driver_webgl_info(driver)
-        print(webgl_getter_result)
-
-        url = "https://bot.sannysoft.com/"
+        # url = "https://bot.sannysoft.com/"
         # url = "https://sh.webmanajemen.com/webgl-information/"
         # url = "https://pixelscan.net/"
         # url = "https://webglreport.com/"
         # url = "https://privacycheck.sec.lrz.de/active/fp_wg/fp_webgl.html"
-        # url = "https://abrahamjuliot.github.io/creepjs/"
+        url = "https://abrahamjuliot.github.io/creepjs/"
         # url = "https://www.browserscan.net/"
         driver.get(url)
+
+        time.sleep(30)
+
+        webgl_getter_result = get_driver_webgl_info(driver)
+        print(webgl_getter_result)
 
         time.sleep(120)
     except Exception as e:

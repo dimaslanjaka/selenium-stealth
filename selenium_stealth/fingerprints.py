@@ -14,12 +14,14 @@ os.makedirs(temp_dir, exist_ok=True)  # Create the directory if it doesn't exist
 def fetch_fingerprint():
     # URL and parameters
     url = "https://fingerprints.bablosoft.com/preview"
+    # https://fingerprints.bablosoft.com/prepare?tags=Chrome,Microsoft&key=
     params = {
         "rand": "0.8730723602904835",
         "tags": "Chrome,Microsoft Windows",
         "maxWidth": "1366",
         "maxHeight": "768",
         "perfectCanvasLogs": "true",
+        "key": "",
     }
 
     # Headers

@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from selenium.webdriver import Chrome as Driver
+from selenium.webdriver.chrome.webdriver import WebDriver as Driver
 
 from .audio_properties import audio_properties_override
 from .chrome_app import chrome_app
@@ -32,8 +33,6 @@ def stealth(
     renderer: str = "Intel Iris OpenGL Engine",
     fix_hairline: bool = False,
     run_on_insecure_origins: bool = False,
-    webgl_version: str = "WebGL 1.0",
-    shading_language: str = "WebGL GLSL ES 1.0",
     **kwargs,
 ) -> None:
     """
@@ -66,20 +65,11 @@ def stealth(
     navigator_vendor(driver, vendor, **kwargs)
     navigator_webdriver(driver, **kwargs)
     user_agent_override(driver, user_agent, ua_languages, platform, **kwargs)
-    webgl_vendor_override(
-        driver, webgl_vendor, renderer, shading_language, webgl_version, **kwargs
-    )
+    webgl_vendor_override(driver, webgl_vendor, renderer, **kwargs)
     window_outerdimensions(driver, **kwargs)
 
     if fix_hairline:
         hairline_fix(driver, **kwargs)
-
-
-import json
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-from selenium.webdriver.chrome.webdriver import WebDriver as Driver
 
 
 def stealth2(
@@ -92,6 +82,8 @@ def stealth2(
     run_on_insecure_origins: bool = False,
     webgl_data: Dict[str, Any] = {},
     audio_properties: Optional[Dict[str, Any]] = None,
+    webgl_version: str = "WebGL 1.0",
+    shading_language: str = "WebGL GLSL ES 1.0",
     **kwargs,
 ) -> None:
     """
