@@ -11,10 +11,13 @@ def evaluationString(fun: str, *args: Any) -> str:
     return expr
 
 
-def evaluateOnNewDocument(driver: Driver, pagefunction: str, *args: Any) -> None:
-
+def evaluateOnNewDocument(
+    driver: Driver, pagefunction: str, *args: Any, **kwargs
+) -> None:
+    debug = kwargs.get("debug", False)
     js_code = evaluationString(pagefunction, *args)
-
+    if debug:
+        print(js_code)
     driver.execute_cdp_cmd(
         "Page.addScriptToEvaluateOnNewDocument",
         {
