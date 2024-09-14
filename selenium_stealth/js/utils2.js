@@ -1,13 +1,13 @@
 /* eslint-disable */
 
-const originalToString = Date.prototype.toString;
-Date.prototype.setHours.toString = originalToString;
-Date.prototype.setFullYear.toString = originalToString;
-Date.prototype.setMilliseconds.toString = originalToString;
-Date.prototype.setDate.toString = originalToString;
-Date.prototype.setSeconds.toString = originalToString;
-Date.prototype.setMonth.toString = originalToString;
-Date.prototype.toString = originalToString;
+const originalDate = new Date()
+Date.prototype.setHours = originalDate.setHours;
+Date.prototype.setFullYear = originalDate.setFullYear;
+Date.prototype.setMilliseconds = originalDate.setMilliseconds;
+Date.prototype.setDate = originalDate.setDate;
+Date.prototype.setSeconds = originalDate.setSeconds;
+Date.prototype.setMonth = originalDate.setMonth;
+Date.prototype.toString = originalDate.toString;
 
 /**
    * A set of shared utility functions specifically for the purpose of modifying native browser APIs without leaving traces.
