@@ -8,6 +8,10 @@ Date.prototype.setDate = originalDate.setDate;
 Date.prototype.setSeconds = originalDate.setSeconds;
 Date.prototype.setMonth = originalDate.setMonth;
 Date.prototype.toString = originalDate.toString;
+const props = ['getDate', 'getDay', 'getFullYear', 'getHours', 'getMinutes'];
+for (let i = 0; i < props.length; i++) {
+  Date.prototype[props[i]] = originalDate[props[i]];
+}
 
 /**
    * A set of shared utility functions specifically for the purpose of modifying native browser APIs without leaving traces.

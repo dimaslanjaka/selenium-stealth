@@ -5,5 +5,13 @@ from selenium.webdriver import Chrome as Driver
 
 def navigator_permissions(driver: Driver, **kwargs) -> None:
     evaluateOnNewDocument(
-        driver, Path(__file__).parent.joinpath("js/navigator.permissions.js").read_text()
+        driver,
+        Path(__file__).parent.joinpath("js/navigator.permissions.js").read_text(),
+    )
+
+
+def navigator_permissions2(driver: Driver, **kwargs) -> None:
+    evaluateOnNewDocument(
+        driver,
+        Path(__file__).parent.joinpath("js/navigator.permissions2.js").read_text(),
     )
