@@ -14,6 +14,16 @@ def with_utils(driver: Driver, **kwargs) -> None:
     )
 
 
+def with_utils2(driver: Driver, **kwargs) -> None:
+    js_code = Path(__file__).parent.joinpath("js/utils2.js").read_text()
+    driver.execute_cdp_cmd(
+        "Page.addScriptToEvaluateOnNewDocument",
+        {
+            "source": js_code,
+        },
+    )
+
+
 def read_json_file(file_path: Optional[str]) -> Union[dict, list, None]:
     """
     Reads a JSON file and returns its contents.
